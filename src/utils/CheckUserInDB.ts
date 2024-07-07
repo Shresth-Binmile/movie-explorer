@@ -9,7 +9,8 @@ export const CheckUserInDB = (data:LoginFormData) => {
         return user.user.name === data.name && user.user.password === data.password
     })
 
-    // console.log(isUserExist)
+    // Setting current user...
+    localStorage.setItem('currentUser', JSON.stringify(isUserExist))
 
     return isUserExist
 }

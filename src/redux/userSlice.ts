@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { Userdata } from '../interfaces/Userdata'
 import { initialStateInterface } from '../interfaces/StateInterfaces'
+import { updateUser } from '../utils/saveDataInDB'
 
 
 const initialState:initialStateInterface = {
@@ -20,6 +21,14 @@ export const userSlice = createSlice({
             // console.log('movieName: ', action.payload.movieName)
             state.comments = [...state.comments, action.payload]
             console.log('addcomments', state.comments)
+            // saving in Local Storage
+            const newData:initialStateInterface = {
+                comments: state.comments,
+                favorites: state.favorites,
+                ratings: state.ratings,
+                name: state.name
+            }
+            updateUser(newData)
         },
         addFavorites: (state, action) => {
             // code to add favorites goes here
@@ -27,6 +36,14 @@ export const userSlice = createSlice({
             const tempSet = new Set(state.favorites)
             state.favorites = [...tempSet]
             console.log('addFavorite', state.favorites)
+            // saving in Local Storage
+            const newData:initialStateInterface = {
+                comments: state.comments,
+                favorites: state.favorites,
+                ratings: state.ratings,
+                name: state.name
+            }
+            updateUser(newData)
         },
         submitRatings: (state, action) => {
             // code to submit ratings
@@ -40,6 +57,14 @@ export const userSlice = createSlice({
                 state.ratings[indx].value = action.payload.value
                 console.log('StateRatings: ', state.ratings[indx].movieName, state.ratings[indx].value)
             }
+            // saving in Local Storage
+            const newData:initialStateInterface = {
+                comments: state.comments,
+                favorites: state.favorites,
+                ratings: state.ratings,
+                name: state.name
+            }
+            updateUser(newData)
         },
         removeFavorites: (state, action) => {
             // code to remove favorites

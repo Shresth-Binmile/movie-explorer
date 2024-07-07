@@ -1,3 +1,4 @@
+import { ratings } from "./StateInterfaces"
 
 export interface comments {
     movieName: string,
@@ -11,7 +12,7 @@ export interface Userdata {
         password: string,
         phoneNo: string,
     },
-    ratings: [],
+    ratings: ratings[],
     favorites: number[],
     comments: comments[]
 }

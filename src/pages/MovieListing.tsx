@@ -33,7 +33,7 @@ const MovieListing = () => {
         </Box>
         {
           results.map((movie, index) => (
-            <MovieCard movie={movie} indx={index} />
+            <MovieCard movie={movie} indx={index} key={index}/>
           ))
         }
       </Box>
