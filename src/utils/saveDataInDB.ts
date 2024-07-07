@@ -4,7 +4,7 @@ import { Userdata } from "../interfaces/Userdata"
 export const getCurrentUser = () => {
     const currentUser:Userdata[] = JSON.parse(localStorage.getItem('currentUser')!)
 
-    return currentUser
+    return currentUser? currentUser : []
 }
 
 export const updateUser = (data:initialStateInterface) => {

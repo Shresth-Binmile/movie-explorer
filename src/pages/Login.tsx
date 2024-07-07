@@ -6,10 +6,12 @@ import { CheckUserInDB } from "../utils/CheckUserInDB";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setInitialState } from "../redux/userSlice";
+import { useAuth } from "../utils/useAuth";
 // import type { RootState } from "../redux/store";
 
 const Login = () => {
   const { control, handleSubmit } = useForm<LoginFormData>();
+  const {setIsLogin, user, isLogin} = useAuth()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   // const stateUser = useSelector((state: RootState)=>state.userReducer)
@@ -19,16 +21,22 @@ const Login = () => {
     const user = CheckUserInDB(data)
 
     if(user.length != 0){
-      // console.log('user exists: ',user)
+      // Setting current user...
+      localStorage.setItem('currentUser', JSON.stringify(user))
       dispatch(setInitialState(user[0]))
-      // console.log('State from login: ', stateUser)
-
+      setIsLogin(true)
       navigate('/')
     }
     else{
       console.log('user not found')
     }
   };
+
+  if(user.length !== 0) {
+    console.log(user)
+    console.log(isLogin)
+    navigate('/')
+  }
 
   return (
     <>

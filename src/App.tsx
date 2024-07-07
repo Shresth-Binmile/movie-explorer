@@ -1,10 +1,13 @@
 import AllRoutes from "./components/AllRoutes"
+import ErrorBoundary from "./components/ErrorBoundary"
 
 function App() {
 
   return (
     <>
-      <AllRoutes />
+      <ErrorBoundary fallback={<h1>Something went wrong.</h1>}>
+        <AllRoutes />
+      </ErrorBoundary>
     </>
   )
 }

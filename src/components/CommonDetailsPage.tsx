@@ -17,7 +17,7 @@ import { useParams } from 'react-router-dom';
 import { comments } from '../interfaces/Userdata';
 import { ratings } from '../interfaces/StateInterfaces';
 import Navbar from './Navbar';
-import { useAuth } from '../utils/useAuth';
+// import { useAuth } from '../utils/useAuth';
 
 const CommonMovieDetails = ({ movie }: MovieDetails) => {
     const [comment, setComment] = useState('');
@@ -26,8 +26,8 @@ const CommonMovieDetails = ({ movie }: MovieDetails) => {
     const dispatch = useDispatch()
     const { id } = useParams()
     const theme = useTheme();
-    const {isLogin, userState} = useAuth()
-    const isLoggedIn = isLogin
+    // const {isLogin, userState} = useAuth()
+    // const isLoggedIn = isLogin
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const handleAddComment = () => {
@@ -68,7 +68,7 @@ const CommonMovieDetails = ({ movie }: MovieDetails) => {
 
     return (
         <>
-            <Navbar isLoggedIn={isLoggedIn} username={`${userState}`} />
+            <Navbar />
             <Box sx={{ maxWidth: 600, margin: 'auto', mt: 10 }}>
                 <Typography variant="h4" gutterBottom align="center">
                     {movie.Title} ({movie.Year})

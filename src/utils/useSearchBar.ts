@@ -36,7 +36,7 @@ export function useSearchBar() {
             }
             SearchMovies()
         }
-    },[searchText])
+    },[searchText, userState])
 
   return {searchText, setSearchText, results, setResults, indexes, setIndexes}
 }

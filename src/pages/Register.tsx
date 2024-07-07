@@ -4,10 +4,12 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 import { RegisterFormData } from "../interfaces/RegisterFormData"
 import { AddUserToDB } from "../utils/AddUserToDB";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../utils/useAuth";
 
 const Register = () => {
   const { control, handleSubmit } = useForm<RegisterFormData>();
   const navigate = useNavigate()
+  const {user, isLogin} = useAuth()
 
   const onSubmit = (data: RegisterFormData) => {
     console.log(data); // Handle form submission logic here
@@ -15,6 +17,12 @@ const Register = () => {
 
     navigate('/login')
   };
+
+  if(user.length !== 0){
+    console.log(user)
+    console.log(isLogin)
+    navigate('/')
+  }
 
   return (
     <>

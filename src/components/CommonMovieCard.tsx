@@ -4,7 +4,7 @@ import { MovieData } from '../interfaces/MovieData';
 import { addFavorites, removeFavorites } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // interface MovieCardProps {
 //   movie: {
@@ -26,8 +26,16 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
     const navigate = useNavigate()
     const location = useLocation().pathname
 
+    console.log(location)
+
+    useEffect(()=>{
+        if(location === '/favorites'){
+            setIsFavorite(true)
+        }
+    }, [isFavorite])
+
     const onAddToFavorites = () => {
-        setIsFavorite(!isFavorite);
+        if(location !== '/favorites') setIsFavorite(!isFavorite);
         // Implement your logic to add/remove from favorites
         console.log(isFavorite ? 'Removed from favorites' : 'Added to favorites');
         if (!isFavorite) {
@@ -93,7 +101,12 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
                             color="primary"
                             onClick={onAddToFavorites}
                         >
-                            {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+                            {
+                                location === '/favorites' ? 'Remove from favorites' : 
+                                (
+                                    isFavorite? 'Remove from favorites' : 'Add to favorites'
+                                )
+                            }
                         </Button>
                     </CardActions>
                 </Box>
