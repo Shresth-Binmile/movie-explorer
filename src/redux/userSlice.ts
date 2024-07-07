@@ -24,6 +24,8 @@ export const userSlice = createSlice({
         addFavorites: (state, action) => {
             // code to add favorites goes here
             state.favorites = [...state.favorites, action.payload]
+            const tempSet = new Set(state.favorites)
+            state.favorites = [...tempSet]
             console.log('addFavorite', state.favorites)
         },
         submitRatings: (state, action) => {
@@ -51,10 +53,16 @@ export const userSlice = createSlice({
             state.name = action.payload.user.name
             state.comments = action.payload.comments
             state.favorites = action.payload.favorites
+        },
+        logoutSetState: (state) => {
+            // code to set initial state
+            state.name = ''
+            state.comments = []
+            state.favorites = []
         }
     }
 })
 
-export const {addComments, addFavorites, removeFavorites, setInitialState, submitRatings} = userSlice.actions
+export const {addComments, addFavorites, removeFavorites, setInitialState, submitRatings, logoutSetState} = userSlice.actions
 
 export default userSlice.reducer

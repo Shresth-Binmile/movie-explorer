@@ -1,4 +1,4 @@
-import { Box, TextField } from "@mui/material"
+import { Box, TextField, Typography } from "@mui/material"
 import Navbar from "../components/Navbar"
 // import { useSelector } from "react-redux"
 // import { RootState } from "../redux/store"
@@ -27,7 +27,9 @@ const FavoriteMovies = () => {
             sx={{ width: 500 }}
             onChange={(e) => setSearchText(e.target.value)}
           />
-          <p>{searchText}</p>
+          {
+            searchText && <Typography textAlign={"center"}>Showing Results for "{searchText}"</Typography>
+          }
         </Box>
         {
           indexes.map((movie) => (

@@ -1,5 +1,7 @@
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { logoutSetState } from '../redux/userSlice';
 
 interface NavbarProps {
   isLoggedIn?: boolean;
@@ -7,6 +9,15 @@ interface NavbarProps {
 }
 
 const Navbar = ({ isLoggedIn, username }:NavbarProps) => {
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const logout = () => {
+    dispatch(logoutSetState())
+    navigate('/login')
+  }
+
   return (
     <AppBar position="static" sx={{position: 'fixed', zIndex: 100, top: 0, left: 0, width: '100%'}}>
       <Toolbar>
@@ -29,7 +40,7 @@ const Navbar = ({ isLoggedIn, username }:NavbarProps) => {
             <Typography variant="body1" sx={{ mr: 2 }}>
               Welcome, {username}
             </Typography>
-            <Button color="inherit" variant="outlined">
+            <Button color="inherit" variant="outlined" onClick={logout}>
               Logout
             </Button>
           </>

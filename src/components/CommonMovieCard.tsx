@@ -3,7 +3,7 @@ import { MovieData } from '../interfaces/MovieData';
 // import { useState } from 'react';
 import { addFavorites, removeFavorites } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 // interface MovieCardProps {
@@ -24,6 +24,7 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
     const [isFavorite, setIsFavorite] = useState(false);
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const location = useLocation().pathname
 
     const onAddToFavorites = () => {
         setIsFavorite(!isFavorite);
@@ -37,6 +38,7 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
         else {
             console.log('Removed from Favorites')
             dispatch(removeFavorites(indx))
+            navigate(`${location}`)
         }
     };
 

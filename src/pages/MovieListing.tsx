@@ -1,4 +1,4 @@
-import { Box, TextField } from "@mui/material"
+import { Box, TextField, Typography } from "@mui/material"
 import MovieCard from "../components/CommonMovieCard"
 import Navbar from "../components/Navbar"
 // import { useSelector } from "react-redux"
@@ -27,7 +27,9 @@ const MovieListing = () => {
             sx={{ width: 500 }}
             onChange={(e) => setSearchText(e.target.value)}
           />
-          <p>{searchText}</p>
+          {
+            searchText && <Typography textAlign={"center"}>Showing Results for "{searchText}"</Typography>
+          }
         </Box>
         {
           results.map((movie, index) => (
