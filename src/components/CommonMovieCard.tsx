@@ -26,7 +26,7 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
     const navigate = useNavigate()
     const location = useLocation().pathname
 
-    console.log(location)
+    // console.log(location)
 
     useEffect(()=>{
         if(location === '/favorites'){
@@ -38,7 +38,7 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
         if(location !== '/favorites') setIsFavorite(!isFavorite);
         // Implement your logic to add/remove from favorites
         console.log(isFavorite ? 'Removed from favorites' : 'Added to favorites');
-        if (!isFavorite) {
+        if (!isFavorite && location !== '/favorites') {
             console.log('Added to Favorites')
             // console.log('id', Number(id))
             dispatch(addFavorites(indx))
@@ -46,7 +46,7 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
         else {
             console.log('Removed from Favorites')
             dispatch(removeFavorites(indx))
-            navigate(`${location}`)
+            // navigate(`${location}`)
         }
     };
 
@@ -57,7 +57,7 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
     }
 
     return (
-        <Card sx={{ my: 1, width: '98%', height: 300, display: 'flex', flexDirection: { xs: 'column', sm: 'row' } }}>
+        <Card sx={{ my: 1, width: '98%', height: 400, display: 'flex', flexDirection: { xs: 'column', sm: 'row' } }}>
             <CardActionArea sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' } }}>
                 <CardMedia
                     component="img"

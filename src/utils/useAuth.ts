@@ -7,7 +7,7 @@ import { Userdata } from "../interfaces/Userdata";
 export function useAuth () {
     const [isLogin, setIsLogin] = useState(false)
     const userState = useSelector((state: RootState)=>state.userReducer.name)
-    const [user, setUser] = useState(<Userdata[]>[])
+    const [user, setUser] = useState<Userdata[]>(getCurrentUser())
 
     useEffect(()=>{
         const Authorize = () => {

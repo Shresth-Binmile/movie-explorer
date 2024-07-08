@@ -72,6 +72,14 @@ export const userSlice = createSlice({
                 return favorite != action.payload
             })
             console.log('removeFavorite', state.favorites)
+            // saving in Local Storage
+            const newData:initialStateInterface = {
+                comments: state.comments,
+                favorites: state.favorites,
+                ratings: state.ratings,
+                name: state.name
+            }
+            updateUser(newData)
         },
         setInitialState: (state, action: PayloadAction<Userdata>) => {
             // code to set initial state

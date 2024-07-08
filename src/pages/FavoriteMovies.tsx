@@ -7,14 +7,20 @@ import movies from '../data/movies.json'
 import { useSearchBar } from "../utils/useSearchBar"
 import { useAuth } from "../utils/useAuth"
 import { useNavigate } from "react-router-dom"
+import { useEffect } from "react"
+import { getCurrentUser } from "../utils/saveDataInDB"
 
 const FavoriteMovies = () => {
 
   // const userState = useSelector((state: RootState) => state.userReducer.name)
-  const {searchText, setSearchText, indexes} = useSearchBar()
+  const {searchText, setSearchText, indexes, setIndexes} = useSearchBar()
   const {isLogin} = useAuth()
   const navigate = useNavigate()
   const isLoggedIn = isLogin
+
+  useEffect(()=>{
+    setIndexes(getCurrentUser()[0].favorites)
+  }, [indexes])
 
   if(isLoggedIn === false){
     return (
@@ -44,7 +50,7 @@ const FavoriteMovies = () => {
           }
         </Box>
         {
-          indexes.map((movie) => (
+          indexes?.map((movie) => (
             <MovieCard movie={movies[movie]} indx={movie} key={movie}/>
           ))
         }

@@ -12,7 +12,7 @@ const Register = () => {
   const {user, isLogin} = useAuth()
 
   const onSubmit = (data: RegisterFormData) => {
-    console.log(data); // Handle form submission logic here
+    // console.log(data); // Handle form submission logic here
     AddUserToDB(data)
 
     navigate('/login')
