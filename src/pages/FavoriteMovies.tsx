@@ -19,7 +19,7 @@ const FavoriteMovies = () => {
   const isLoggedIn = isLogin
 
   useEffect(()=>{
-    setIndexes(getCurrentUser()[0].favorites)
+    setIndexes(getCurrentUser()[0]?.favorites)
   }, [indexes])
 
   if(isLoggedIn === false){
@@ -42,7 +42,7 @@ const FavoriteMovies = () => {
             placeholder="Search"
             variant="standard"
             fullWidth
-            sx={{ width: 500 }}
+            sx={{ maxWidth: 500, minWidth: 300}}
             onChange={(e) => setSearchText(e.target.value)}
           />
           {

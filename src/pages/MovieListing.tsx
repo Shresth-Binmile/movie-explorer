@@ -24,7 +24,7 @@ const MovieListing = () => {
             placeholder="Search"
             variant="standard"
             fullWidth
-            sx={{ width: 500 }}
+            sx={{ maxWidth: 500, minWidth: 300 }}
             onChange={(e) => setSearchText(e.target.value)}
           />
           {
@@ -32,7 +32,7 @@ const MovieListing = () => {
           }
         </Box>
         {
-          results.map((movie, index) => (
+          results?.map((movie, index) => (
             <MovieCard movie={movie} indx={index} key={index}/>
           ))
         }

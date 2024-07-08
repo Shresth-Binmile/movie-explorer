@@ -18,7 +18,7 @@ export function useSearchBar() {
     useEffect(()=>{
         if(location == '/'){   // for Movie Listing Page
             const SearchMovies = () => {
-                const result = movies.filter((movie)=>{
+                const result = movies?.filter((movie)=>{
                     return movie.Title.toLowerCase().includes(searchText) || movie.Plot.toLowerCase().includes(searchText)
                 })
     
