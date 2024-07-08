@@ -81,7 +81,7 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
             flexDirection: { xs: 'column', sm: 'row' },
             justifyContent: 'space-between',
             minHeight: 50,
-            maxHeight: {lg: 400},
+            maxHeight: {lg: 400, xs: 650},
             '&:hover': {
                 boxShadow: '0 0 10px rgba(0,0,0,0.3)',
             },
@@ -94,7 +94,7 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
                     alt={movie.Title}
                     sx={{
                         maxWidth: { xs: '100%', sm: '30%' },
-                        maxHeight: {lg: 300},
+                        maxHeight: {lg: 300, xs: 250},
                         objectFit: 'contain',
                         mb: { xs: 2, sm: 0 },
                     }}
