@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Box,
     Typography,
@@ -17,6 +17,9 @@ import { useParams } from 'react-router-dom';
 import { comments } from '../interfaces/Userdata';
 import { ratings } from '../interfaces/StateInterfaces';
 import Navbar from './Navbar';
+import { useAuth } from '../utils/useAuth';
+import { addMovieComments, getMovieComments } from '../utils/Comments';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 // import { useAuth } from '../utils/useAuth';
 
 const CommonMovieDetails = ({ movie }: MovieDetails) => {
@@ -26,19 +29,32 @@ const CommonMovieDetails = ({ movie }: MovieDetails) => {
     const dispatch = useDispatch()
     const { id } = useParams()
     const theme = useTheme();
-    // const {isLogin, userState} = useAuth()
-    // const isLoggedIn = isLogin
+    const { user } = useAuth()
+    let isAdded = user[0].favorites.findIndex((i) => i == Number(id))
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const [commArr, setCommArr] = useState<comments[]>(getMovieComments())
+    let comments = []
+
+    useEffect(() => {
+        if (isAdded !== -1) {
+            setIsFavorite(true)
+        }
+        else {
+            setIsFavorite(false)
+        }
+    }, [isAdded])
 
     const handleAddComment = () => {
-        // Implement your logic to save comment
-        // console.log('Comment:', comment);
         const newComment: comments = {
             movieName: movie.Title,
-            comment
+            comment,
+            rating
         }
+        console.log(newComment)
+        addMovieComments(newComment)
         dispatch(addComments(newComment))
         setComment('');
+        setCommArr(getMovieComments())
     };
 
     const handleRatingChange = (newValue: number | null) => {
@@ -47,17 +63,14 @@ const CommonMovieDetails = ({ movie }: MovieDetails) => {
             movieName: movie.Title,
             value: newValue!
         }
-        console.log('page: ', newratingObject)
         dispatch(submitRatings(newratingObject))
+        // setRating(null)
     };
 
     const handleToggleFavorite = () => {
         setIsFavorite(!isFavorite);
-        // Implement your logic to add/remove from favorites
-        console.log(isFavorite ? 'Removed from favorites' : 'Added to favorites');
-        if (!isFavorite) {
+        if (!isFavorite && isAdded == -1) {
             console.log('Added to Favorites')
-            // console.log('id', Number(id))
             dispatch(addFavorites(Number(id)))
         }
         else {
@@ -66,10 +79,12 @@ const CommonMovieDetails = ({ movie }: MovieDetails) => {
         }
     };
 
+    comments = commArr?.filter((i) => i.movieName === movie.Title)
+
     return (
         <>
             <Navbar />
-            <Box sx={{ maxWidth: 600, margin: 'auto', mt: 10 }}>
+            <Box sx={{ maxWidth: 700, margin: 'auto', mt: 10 }}>
                 <Typography variant="h4" gutterBottom align="center">
                     {movie.Title} ({movie.Year})
                 </Typography>
@@ -101,7 +116,7 @@ const CommonMovieDetails = ({ movie }: MovieDetails) => {
 
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Box>
-                        <Typography variant="h5">Rate This Movie:</Typography>
+                        <Typography variant="h6" component={'h6'}>Rate This Movie:</Typography>
                         <Rating
                             name="movie-rating"
                             value={rating}
@@ -125,24 +140,62 @@ const CommonMovieDetails = ({ movie }: MovieDetails) => {
                 <Divider sx={{ my: 3 }} />
 
                 <Box>
-                    <Typography variant="h5">Comments:</Typography>
-                    <TextField
-                        variant="outlined"
-                        multiline
-                        rows={4}
-                        fullWidth
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                        placeholder="Add your comment..."
-                        sx={{ mb: 2 }}
-                    />
-                    <Button variant="contained" color="primary" onClick={handleAddComment}>
+                    <Box>
+                        <TextField
+                            variant="outlined"
+                            multiline
+                            rows={2}
+                            // fullWidth
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            placeholder="Add your comment..."
+                            sx={{ mb: 2, minWidth: '75%' }}
+                        />
+                    </Box>
+                    <Button variant="contained" color="primary" onClick={handleAddComment}
+                    // sx={{ ml: 2 }}
+                    >
                         Add Comment
                     </Button>
                 </Box>
 
                 <Divider sx={{ my: 3 }} />
 
+                <Box>
+                    <Typography variant="h5" mb={3}>Comments:</Typography>
+                    {
+                        comments?.map((comment) => {
+                            return (
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        maxWidth: '100%',
+                                        padding: 2,
+                                        marginBottom: 2,
+                                        backgroundColor: '#f0f0f0',
+                                        borderRadius: 8,
+                                        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+                                    }}
+                                >
+                                    <AccountCircleIcon sx={{ fontSize: 40, marginRight: 2 }} />
+                                    <Box sx={{ flex: 1 }}>
+                                        {/* <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                                            {user[0].user.name}
+                                        </Typography> */}
+                                        <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                                            {comment.comment}
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ color: '#666' }}>
+                                            Rating: {comment.rating}
+                                        </Typography>
+                                    </Box>
+                                    <Divider orientation="vertical" sx={{ mx: 2, height: 'auto' }} />
+                                </Box>
+                            )
+                        })
+                    }
+                </Box>
 
             </Box>
         </>

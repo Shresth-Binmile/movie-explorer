@@ -1,18 +1,14 @@
 import { Box, TextField, Typography } from "@mui/material"
 import MovieCard from "../components/CommonMovieCard"
 import Navbar from "../components/Navbar"
-// import { useSelector } from "react-redux"
-// import { RootState } from "../redux/store"
-// import movies from '../data/movies.json'
 import { useSearchBar } from "../utils/useSearchBar"
-// import { useAuth } from "../utils/useAuth"
+// import { useFetchApi } from "../utils/fetchApi"
 
 const MovieListing = () => {
 
-  // const userState = useSelector((state: RootState) => state.userReducer.name)
   const {searchText, setSearchText, results} = useSearchBar()
-  // const {isLogin, userState} = useAuth()
-  // const isLoggedIn = isLogin
+  // const {movies} = useFetchApi()
+  // console.log(movies)
 
   return (
     <>

@@ -2,7 +2,8 @@ import { ratings } from "./StateInterfaces"
 
 export interface comments {
     movieName: string,
-    comment: string
+    comment: string,
+    rating?: number | null
 }
 
 export interface Userdata {

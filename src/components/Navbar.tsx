@@ -108,22 +108,24 @@ const Navbar = () => {
 
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {isLoggedIn && (
-              <Typography variant="body1" fontWeight={'Bold'} sx={{ mr: { xs: 1, sm: 2 }, display: { xs: 'none', md: 'inline', sm: 'inline'} }}>
+              <Typography variant="body1" fontWeight={'Bold'} sx={{ mr: { xs: 1, sm: 2 }, display: { xs: 'none', md: 'inline', sm: 'inline' } }}>
                 Welcome, {user[0]?.user?.name}
               </Typography>
             )}
             {isLoggedIn ? (
-              <Button color="inherit" variant='text' onClick={logout} sx={{position: 'absolute', ml: 1, right: 2}}>
+              <Button color="inherit" variant='text' onClick={logout} sx={{ position: 'absolute', ml: 1, right: 2 }}>
                 <LogoutIcon />
               </Button>
             ) : (
               <>
-                <Button component={Link} to="/login" color="inherit" variant="text">
-                  Login
-                </Button>
-                <Button component={Link} to="/register" color="inherit" variant="text">
-                  Register
-                </Button>
+                <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                  <Button component={Link} to="/login" color="inherit" variant="text" sx={{ display: { xs: 'none', sm: 'grid'} }}>
+                    Login
+                  </Button>
+                  <Button component={Link} to="/register" color="inherit" variant="text" sx={{ display: { xs: 'none', sm: 'grid'}}}>
+                    Register
+                  </Button>
+                </Box>
               </>
             )}
           </Box>

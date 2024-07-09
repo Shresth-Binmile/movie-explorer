@@ -8,9 +8,9 @@ export const getCurrentUser = () => {
 }
 
 export const updateUser = (data:initialStateInterface) => {
-    console.log(Array.from(data.comments), Array.from(data.favorites), Array.from(data.ratings))
+    // console.log(Array.from(data.comments), Array.from(data.favorites), Array.from(data.ratings))
     const currentUserData:Userdata[] = getCurrentUser()
-    console.log(currentUserData[0])
+    // console.log('before', currentUserData[0])
     
     const newCurrentUserData:Userdata = {
         user: currentUserData[0].user,
@@ -18,7 +18,7 @@ export const updateUser = (data:initialStateInterface) => {
         comments: Array.from(data.comments),
         ratings: Array.from(data.ratings)
     }
-    console.log(newCurrentUserData)
+    // console.log('newCurrentUser', newCurrentUserData)
     const lsData:Userdata[] = JSON.parse(localStorage.getItem('users')!) // getting userlist from db
     let userId = -1;
     for(let i = 0; i < lsData.length; i++){ // finding current user syntax
@@ -28,7 +28,7 @@ export const updateUser = (data:initialStateInterface) => {
         }
     }
 
-    console.log('id: ', userId)
+    // console.log('id: ', userId)
     let user: Userdata[];
     user = []
     for(let i = 0; i < lsData.length; i++){
@@ -39,9 +39,10 @@ export const updateUser = (data:initialStateInterface) => {
             user.push(lsData[i])
         }
     }
-    console.log(user)
+    // console.log(user)
 
     localStorage.setItem('users', JSON.stringify(user))
-    localStorage.setItem('currentUser', JSON.stringify(user))
+    localStorage.setItem('currentUser', JSON.stringify([newCurrentUserData]))
+    // console.log('before', currentUserData[0])
 
 }

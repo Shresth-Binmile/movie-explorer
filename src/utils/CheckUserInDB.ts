@@ -9,5 +9,7 @@ export const CheckUserInDB = (data:LoginFormData) => {
         return user.user.name === data.name && user.user.password === data.password
     })
 
+    // console.log(isUserExist)
+
     return isUserExist
 }
