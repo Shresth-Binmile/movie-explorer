@@ -2,15 +2,12 @@ import { useEffect, useState } from "react"
 import movies from '../data/movies.json'
 import { MovieData } from "../interfaces/MovieData"
 import { useLocation } from "react-router-dom"
-// import { useSelector } from "react-redux"
-// import { RootState } from "../redux/store"
 import { useAuth } from "./useAuth"
 
 export function useSearchBar() {
 
     const [searchText, setSearchText] = useState('')
     const [results, setResults] = useState<MovieData[]>([])
-    // const userState = useSelector((state: RootState) => state.userReducer.favorites)
     const {user} = useAuth()
     const [indexes, setIndexes] = useState<number[]>([])
     const location = useLocation().pathname

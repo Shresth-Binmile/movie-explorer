@@ -7,9 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../utils/useAuth";
 
 const Register = () => {
-  const { control, handleSubmit } = useForm<RegisterFormData>();
+  const { control, handleSubmit, formState: {errors} } = useForm<RegisterFormData>();
   const navigate = useNavigate()
-  const {user, isLogin} = useAuth()
+  const { user, isLogin } = useAuth()
 
   const onSubmit = (data: RegisterFormData) => {
     // console.log(data); // Handle form submission logic here
@@ -18,7 +18,7 @@ const Register = () => {
     navigate('/login')
   };
 
-  if(user.length !== 0){
+  if (user.length !== 0) {
     console.log(user)
     console.log(isLogin)
     navigate('/')
@@ -52,7 +52,7 @@ const Register = () => {
             name="password"
             control={control}
             defaultValue=""
-            rules={{ required: 'Password is required' }}
+            rules={{ required: 'Password is required. Min. length should be 8 characters.', minLength: 8 }}
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
@@ -65,6 +65,9 @@ const Register = () => {
               />
             )}
           />
+          {errors.password && errors.password.type === "minLength" && (
+            <Typography sx={{ color: 'red', m: 0, fontSize: 12, pl: 2}}>Password must be at least 8 characters long</Typography>
+          )}
           <Controller
             name="phoneNumber"
             control={control}

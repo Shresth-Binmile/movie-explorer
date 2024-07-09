@@ -20,17 +20,17 @@ import Navbar from './Navbar';
 import { useAuth } from '../utils/useAuth';
 import { addMovieComments, getMovieComments } from '../utils/Comments';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-// import { useAuth } from '../utils/useAuth';
 
 const CommonMovieDetails = ({ movie }: MovieDetails) => {
     const [comment, setComment] = useState('');
     const [rating, setRating] = useState<number | null>(null);
     const [isFavorite, setIsFavorite] = useState(false);
+    const { isLogin } = useAuth()
     const dispatch = useDispatch()
     const { id } = useParams()
     const theme = useTheme();
     const { user } = useAuth()
-    let isAdded = user[0].favorites.findIndex((i) => i == Number(id))
+    let isAdded = user[0]?.favorites?.findIndex((i) => i == Number(id))
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [commArr, setCommArr] = useState<comments[]>(getMovieComments())
     let comments = []
@@ -45,37 +45,52 @@ const CommonMovieDetails = ({ movie }: MovieDetails) => {
     }, [isAdded])
 
     const handleAddComment = () => {
-        const newComment: comments = {
-            movieName: movie.Title,
-            comment,
-            rating
+        if (isLogin) {
+            const newComment: comments = {
+                movieName: movie.Title,
+                comment,
+                rating
+            }
+            console.log(newComment)
+            addMovieComments(newComment)
+            dispatch(addComments(newComment))
+            setComment('');
+            setCommArr(getMovieComments())
+            setRating(null)
         }
-        console.log(newComment)
-        addMovieComments(newComment)
-        dispatch(addComments(newComment))
-        setComment('');
-        setCommArr(getMovieComments())
+        else {
+            alert('Login First')
+        }
     };
 
     const handleRatingChange = (newValue: number | null) => {
-        setRating(newValue);
-        const newratingObject: ratings = {
-            movieName: movie.Title,
-            value: newValue!
+        if (isLogin) {
+            setRating(newValue);
+            const newratingObject: ratings = {
+                movieName: movie.Title,
+                value: newValue!
+            }
+            dispatch(submitRatings(newratingObject))
         }
-        dispatch(submitRatings(newratingObject))
-        // setRating(null)
+        else {
+            alert('Login First')
+        }
     };
 
     const handleToggleFavorite = () => {
-        setIsFavorite(!isFavorite);
-        if (!isFavorite && isAdded == -1) {
-            console.log('Added to Favorites')
-            dispatch(addFavorites(Number(id)))
+        if (isLogin) {
+            setIsFavorite(!isFavorite);
+            if (!isFavorite && isAdded == -1) {
+                console.log('Added to Favorites')
+                dispatch(addFavorites(Number(id)))
+            }
+            else {
+                console.log('Removed from Favorites')
+                dispatch(removeFavorites(Number(id)))
+            }
         }
         else {
-            console.log('Removed from Favorites')
-            dispatch(removeFavorites(Number(id)))
+            alert('Login First')
         }
     };
 
@@ -126,14 +141,29 @@ const CommonMovieDetails = ({ movie }: MovieDetails) => {
                         />
                     </Box>
                     <Box>
-                        <Button
-                            variant={isFavorite ? 'outlined' : 'contained'}
-                            color="secondary"
-                            onClick={handleToggleFavorite}
-                            fullWidth={isSmallScreen}
-                        >
-                            {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
-                        </Button>
+                        {
+                            isLogin ? (
+                                <Button
+                                    variant={isFavorite ? 'outlined' : 'contained'}
+                                    color="secondary"
+                                    onClick={handleToggleFavorite}
+                                    fullWidth={isSmallScreen}
+                                >
+                                    {
+                                        isFavorite ? 'Remove from Favorites' : 'Add to Favorites'
+                                    }
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant={'contained'}
+                                    color="secondary"
+                                    onClick={handleToggleFavorite}
+                                    fullWidth={isSmallScreen}
+                                >
+                                    Add to Favorites
+                                </Button>
+                            )
+                        }
                     </Box>
                 </Box>
 

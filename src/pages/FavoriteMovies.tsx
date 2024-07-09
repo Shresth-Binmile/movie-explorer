@@ -1,7 +1,5 @@
-import { Box, Button, TextField, Typography } from "@mui/material"
+import { Box, Button, Typography } from "@mui/material"
 import Navbar from "../components/Navbar"
-// import { useSelector } from "react-redux"
-// import { RootState } from "../redux/store"
 import MovieCard from "../components/CommonMovieCard"
 import movies from '../data/movies.json'
 import { useSearchBar } from "../utils/useSearchBar"
@@ -12,8 +10,7 @@ import { getCurrentUser } from "../utils/saveDataInDB"
 
 const FavoriteMovies = () => {
 
-  // const userState = useSelector((state: RootState) => state.userReducer.name)
-  const {searchText, setSearchText, indexes, setIndexes} = useSearchBar()
+  const { indexes, setIndexes} = useSearchBar()
   const {isLogin} = useAuth()
   const navigate = useNavigate()
   const isLoggedIn = isLogin
@@ -31,12 +28,24 @@ const FavoriteMovies = () => {
       </Box>
     )
   }
+  
+  if(indexes.length === 0){
+    return (
+      <Box>
+        <Navbar />
+        <Typography textAlign={"center"} sx={{
+          mt: 10,
+          fontSize: {md: 40, xs: 20, sm: 30},
+        }}>No Items In Favorites</Typography>
+      </Box>
+    )
+  }
 
   return (
     <>
       <Navbar />
       <Box sx={{ mt: 10, display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <Box>
+        {/* <Box> // Search Adds Here...
           <TextField
             id="standard-basic"
             placeholder="Search"
@@ -48,7 +57,7 @@ const FavoriteMovies = () => {
           {
             searchText && <Typography textAlign={"center"}>Showing Results for "{searchText}"</Typography>
           }
-        </Box>
+        </Box> */}
         {
           indexes?.map((movie) => (
             <MovieCard movie={movies[movie]} indx={movie} key={movie}/>

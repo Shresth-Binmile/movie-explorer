@@ -10,7 +10,7 @@ import { useAuth } from "../utils/useAuth";
 // import type { RootState } from "../redux/store";
 
 const Login = () => {
-  const { control, handleSubmit } = useForm<LoginFormData>();
+  const { control, handleSubmit, formState: {errors} } = useForm<LoginFormData>();
   const {setIsLogin, user, isLogin} = useAuth()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -29,6 +29,7 @@ const Login = () => {
     }
     else{
       console.log('user not found')
+      alert("User Not Found! Register to Login/View Movies")
     }
   };
 
@@ -66,7 +67,7 @@ const Login = () => {
             name="password"
             control={control}
             defaultValue=""
-            rules={{ required: 'Password is required' }}
+            rules={{ required: 'Password is required. Min. length should be 8 characters.', minLength: 8 }}
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
@@ -79,6 +80,9 @@ const Login = () => {
               />
             )}
           />
+          {errors.password && errors.password.type === "minLength" && (
+            <Typography sx={{ color: 'red', m: 0, fontSize: 12, pl: 2}}>Password must be at least 8 characters long</Typography>
+          )}
           <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
             <Button type="submit" variant="contained" color="primary">
               Login
