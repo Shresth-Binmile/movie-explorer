@@ -7,11 +7,6 @@ import { useState } from 'react';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Menu } from '@mui/icons-material';
 
-// interface NavbarProps {
-//   isLoggedIn?: boolean;
-//   username?: string;
-// }
-
 const Navbar = () => {
 
   const dispatch = useDispatch()
