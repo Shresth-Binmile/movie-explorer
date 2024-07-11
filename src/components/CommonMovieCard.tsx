@@ -23,13 +23,22 @@ import { useAuth } from '../utils/useAuth';
 const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
 
     const [isFavorite, setIsFavorite] = useState(false);
-    const { isLogin } = useAuth()
+    const { isLogin, user } = useAuth()
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    let isAdded = user[0]?.favorites?.findIndex((i) => i == indx)
     const location = useLocation().pathname
     let index = -1;
 
     // console.log(location)
+    useEffect(() => {
+        if (isAdded !== -1) {
+            setIsFavorite(true)
+        }
+        else {
+            setIsFavorite(false)
+        }
+    }, [isAdded])
 
     useEffect(() => {
         if (location === '/favorites') {
