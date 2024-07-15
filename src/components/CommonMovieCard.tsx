@@ -23,22 +23,23 @@ import { useAuth } from '../utils/useAuth';
 const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
 
     const [isFavorite, setIsFavorite] = useState(false);
-    const { isLogin } = useAuth()
+    const { isLogin, user } = useAuth()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    // let isAdded = user[0]?.favorites?.findIndex((i) => i == indx)
+    let isAdded = user[0]?.favorites?.findIndex((i) => movies[i].Title === movie.Title)
     const location = useLocation().pathname
     let index = -1;
 
     // console.log(location)
-    // useEffect(() => {
-    //     if (isAdded !== -1) {
-    //         setIsFavorite(true)
-    //     }
-    //     else {
-    //         setIsFavorite(false)
-    //     }
-    // }, [isAdded])
+    useEffect(() => {
+        isAdded = user[0]?.favorites?.findIndex((i) => movies[i].Title === movie.Title)
+        if (isAdded !== -1) {
+            setIsFavorite(true)
+        }
+        else {
+            setIsFavorite(false)
+        }
+    }, [isAdded])
 
     useEffect(() => {
         if (location === '/favorites') {
@@ -137,12 +138,12 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
                         {
                             isLogin && (
                                 <Button
-                                    variant={isFavorite ? 'outlined' : 'contained'}
+                                    variant={isFavorite || isAdded !== -1 ? 'outlined' : 'contained'}
                                     size="small"
                                     color="primary"
                                     onClick={onAddToFavorites}
                                 >
-                                    {isFavorite || location === '/favorites' ? 'Remove from favorites' : 'Add to favorites'}
+                                    {isAdded !== -1 || isFavorite || location === '/favorites' ? 'Remove from favorites' : 'Add to favorites'}
                                 </Button>
                             )
                         }
