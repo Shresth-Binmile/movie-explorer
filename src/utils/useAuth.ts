@@ -17,7 +17,7 @@ export function useAuth () {
             }
         }
         Authorize()
-    },[user])
+    },[])
 
     return {isLogin, setIsLogin, userState, user, setUser}
 }
