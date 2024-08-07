@@ -6,38 +6,47 @@ import { CheckUserInDB } from "../utils/CheckUserInDB";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setInitialState } from "../redux/userSlice";
-import { useAuth } from "../utils/useAuth";
+// import { useAuth } from "../utils/useAuth";
+import { getFavorites } from "../utils/manipulateDB";
+import toast from "react-hot-toast";
 // import type { RootState } from "../redux/store";
 
 const Login = () => {
   const { control, handleSubmit, formState: {errors} } = useForm<LoginFormData>();
-  const {setIsLogin, user, isLogin} = useAuth()
+  // const {setIsLogin, user, isLogin} = useAuth()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   // const stateUser = useSelector((state: RootState)=>state.userReducer)
 
-  const onSubmit = (data: LoginFormData) => {
+  const onSubmit = async(data: LoginFormData) => {
     // console.log(data); // Handle form submission logic here
-    const user = CheckUserInDB(data)
+    const message = await CheckUserInDB(data)
+    localStorage.setItem('token', message?.token)
+    const favorites = await getFavorites()
 
-    if(user.length != 0){
+    const initialState = {
+      name: data.name,
+      favorites
+    }
+
+    if(message?.message === 'Login Successful'){
       // Setting current user...
-      localStorage.setItem('currentUser', JSON.stringify(user))
-      dispatch(setInitialState(user[0]))
-      setIsLogin(true)
+      localStorage.setItem('currentUser', JSON.stringify(initialState))
+      dispatch(setInitialState(initialState))
+      // setIsLogin(true)
       navigate('/')
     }
     else{
       console.log('user not found')
-      alert("User Not Found! Register to Login/View Movies")
+      toast("User Not Found! Register to Login/View Movies")
     }
   };
 
-  if(user.length !== 0) {
-    console.log(user)
-    console.log(isLogin)
-    navigate('/')
-  }
+  // if(user.length !== 0) {
+  //   console.log(user)
+  //   console.log(isLogin)
+  //   navigate('/')
+  // }
 
   return (
     <>

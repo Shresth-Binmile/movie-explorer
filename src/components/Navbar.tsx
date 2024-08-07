@@ -6,6 +6,7 @@ import { useAuth } from '../utils/useAuth';
 import { useState } from 'react';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Menu } from '@mui/icons-material';
+import { logout } from '../utils/logoutFunction';
 
 const Navbar = () => {
 
@@ -23,9 +24,9 @@ const Navbar = () => {
     setDrawerOpen(open);
   };
 
-  const logout = () => {
+  const logoutFunc = () => {
     dispatch(logoutSetState())
-    localStorage.removeItem('currentUser')
+    logout()
     setIsLogin(false)
     navigate('/login')
   }
@@ -49,7 +50,7 @@ const Navbar = () => {
           <>
             <ListItem>
               <Typography variant="body1" fontWeight={'Bold'}>
-                Welcome, {user[0]?.user?.name}
+                Welcome, {user?.name?.split(' ')[0]}
               </Typography>
             </ListItem>
             <ListItem button onClick={logout}>
@@ -106,11 +107,11 @@ const Navbar = () => {
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {isLoggedIn && (
               <Typography variant="body1" fontWeight={'Bold'} sx={{ mr: { xs: 1, sm: 2 }, display: { xs: 'none', md: 'inline', sm: 'inline' } }}>
-                Welcome, {user[0]?.user?.name}
+                Welcome, {user?.name?.split(' ')[0]}
               </Typography>
             )}
             {isLoggedIn ? (
-              <Button color="inherit" variant='text' onClick={logout} sx={{ position: 'absolute', ml: 1, right: 2 }}>
+              <Button color="inherit" variant='text' onClick={logoutFunc} sx={{ position: 'absolute', ml: 1, right: 2 }}>
                 <LogoutIcon />
               </Button>
             ) : (

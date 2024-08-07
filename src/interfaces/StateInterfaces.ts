@@ -8,7 +8,6 @@ export interface ratings{
 
 export interface initialStateInterface {
     name: string,
-    ratings: ratings[]
     comments: comments[],
-    favorites: number[]
+    favorites: string[]
 }

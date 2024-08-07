@@ -11,90 +11,118 @@ import {
     Grid,
 } from '@mui/material';
 import { MovieDetails } from '../interfaces/MovieData';
-import { addComments, addFavorites, removeFavorites, submitRatings } from '../redux/userSlice';
+// import { addComments, submitRatings } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { comments } from '../interfaces/Userdata';
-import { ratings } from '../interfaces/StateInterfaces';
+// import { ratings } from '../interfaces/StateInterfaces';
 import Navbar from './Navbar';
 import { useAuth } from '../utils/useAuth';
-import { addMovieComments, getMovieComments } from '../utils/Comments';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { addCommentsAndRatings, addFavorites, getCommentsAndRatings, removeFavorites } from '../utils/manipulateDB';
+// import { getCurrentUserFromLS } from '../utils/saveDataInDB';
+import { CommentsResponse } from '../interfaces/ResponseType';
+import { addComments, addFavoritesRedux, removeFavoritesRedux, setInitialComments } from '../redux/userSlice';
+import toast from 'react-hot-toast';
+// import { RootState } from '../redux/store';
 
 const CommonMovieDetails = ({ movie }: MovieDetails) => {
     const [comment, setComment] = useState('');
     const [rating, setRating] = useState<number | null>(null);
+    const [commentCount, setCommentCount] = useState(false)
     const [isFavorite, setIsFavorite] = useState(false);
-    const { isLogin } = useAuth()
+    const { isLogin, userState } = useAuth()
     const dispatch = useDispatch()
-    const { id } = useParams()
     const theme = useTheme();
-    const { user } = useAuth()
-    let isAdded = user[0]?.favorites?.findIndex((i) => i == Number(id))
+    // const currentUser:any = getCurrentUserFromLS()
+    let isAdded = userState?.favorites?.findIndex((i:string) => i === movie.imdbID)
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const [commArr, setCommArr] = useState<comments[]>(getMovieComments())
-    let comments = []
+    const [commArr, setCommArr] = useState<CommentsResponse[]>([])
+
+    useEffect(()=>{
+        // console.log('commArr', commArr)
+        dispatch(setInitialComments(commArr))
+        const fetchComments = async() => {
+            const updatedCommentsArray = await getCommentsAndRatings(movie.imdbID)
+            setCommArr(updatedCommentsArray)
+        }
+        fetchComments()
+    }, [commentCount])
 
     useEffect(() => {
+        // console.log(isAdded)
+        isAdded = userState?.favorites?.findIndex((i:string) => i === movie.imdbID)
         if (isAdded !== -1) {
             setIsFavorite(true)
         }
         else {
             setIsFavorite(false)
         }
-    }, [isAdded])
+    }, [isAdded, isLogin, isFavorite])
 
-    const handleAddComment = () => {
+    const handleAddComment = async() => {
         if (isLogin) {
-            const newComment: comments = {
-                movieName: movie.Title,
-                comment,
-                rating
+            if (!rating) {
+                toast.error('Both Comments & Ratings must be provided')
             }
-            console.log(newComment)
-            addMovieComments(newComment)
-            dispatch(addComments(newComment))
-            setComment('');
-            setCommArr(getMovieComments())
-            setRating(null)
+            else {
+                await addCommentsAndRatings(movie.imdbID, comment, rating)
+                const newObj = {
+                    imdbID: movie.imdbID,
+                    comments: comment,
+                    ratings: rating
+                }
+                dispatch(addComments(newObj))
+                setComment('');
+                const comments = await getCommentsAndRatings(movie.imdbID)
+                setCommArr(comments)
+                // console.log('commentArr: ', comments)
+                setRating(null)
+                setCommentCount(!commentCount)
+            }
         }
         else {
-            alert('Login First')
+            toast.error('Login First')
         }
     };
 
     const handleRatingChange = (newValue: number | null) => {
         if (isLogin) {
             setRating(newValue);
-            const newratingObject: ratings = {
-                movieName: movie.Title,
-                value: newValue!
-            }
-            dispatch(submitRatings(newratingObject))
+            // const newratingObject: ratings = {
+            //     movieName: movie.Title,
+            //     value: newValue!
+            // }
+            // dispatch(submitRatings(newratingObject))
         }
         else {
-            alert('Login First')
+            toast.error('Login First')
         }
     };
 
-    const handleToggleFavorite = () => {
+    const handleToggleFavorite = async() => {
         if (isLogin) {
+            // console.log(isFavorite)
             setIsFavorite(!isFavorite);
             if (!isFavorite && isAdded == -1) {
-                console.log('Added to Favorites')
-                dispatch(addFavorites(Number(id)))
+                // console.log('Added')
+                await addFavorites(movie.imdbID)
+                dispatch(addFavoritesRedux(movie.imdbID))
+                setIsFavorite(!isFavorite)
+                // console.log(isFavorite)
             }
             else {
-                console.log('Removed from Favorites')
-                dispatch(removeFavorites(Number(id)))
+                // console.log('removed')
+                await removeFavorites(movie.imdbID)
+                dispatch(removeFavoritesRedux(movie.imdbID))
+                setIsFavorite(!isFavorite)
+                // console.log(isFavorite)
             }
         }
         else {
-            alert('Login First')
+            toast.error('Login First')
         }
     };
 
-    comments = commArr?.filter((i) => i.movieName === movie.Title)
+    // console.log(commArr)
 
     return (
         <>
@@ -144,13 +172,13 @@ const CommonMovieDetails = ({ movie }: MovieDetails) => {
                         {
                             isLogin ? (
                                 <Button
-                                    variant={isFavorite ? 'outlined' : 'contained'}
+                                    variant={isFavorite && isAdded !== -1 ? 'outlined' : 'contained'}
                                     color="secondary"
                                     onClick={handleToggleFavorite}
                                     fullWidth={isSmallScreen}
                                 >
                                     {
-                                        isFavorite ? 'Remove from Favorites' : 'Add to Favorites'
+                                        isFavorite && isAdded !== -1 ? 'Remove from Favorites' : 'Add to Favorites'
                                     }
                                 </Button>
                             ) : (
@@ -194,7 +222,7 @@ const CommonMovieDetails = ({ movie }: MovieDetails) => {
                 <Box>
                     <Typography variant="h5" mb={3}>Comments:</Typography>
                     {
-                        comments?.map((comment) => {
+                        commArr?.map((comment:CommentsResponse, indx) => {
                             return (
                                 <Box
                                     sx={{
@@ -207,6 +235,7 @@ const CommonMovieDetails = ({ movie }: MovieDetails) => {
                                         borderRadius: 8,
                                         boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
                                     }}
+                                    key={indx}
                                 >
                                     <AccountCircleIcon sx={{ fontSize: 40, marginRight: 2 }} />
                                     <Box sx={{ flex: 1 }}>
@@ -214,10 +243,10 @@ const CommonMovieDetails = ({ movie }: MovieDetails) => {
                                             {user[0].user.name}
                                         </Typography> */}
                                         <Typography variant="body2" sx={{ marginBottom: 1 }}>
-                                            {comment.comment}
+                                            {comment?.comments}
                                         </Typography>
                                         <Typography variant="body2" sx={{ color: '#666' }}>
-                                            Rating: {comment.rating}
+                                            Rating: {comment?.ratings}
                                         </Typography>
                                     </Box>
                                     <Divider orientation="vertical" sx={{ mx: 2, height: 'auto' }} />

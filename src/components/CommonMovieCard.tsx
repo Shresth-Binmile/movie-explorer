@@ -1,11 +1,12 @@
 import { Card, CardActionArea, CardActions, CardContent, CardMedia, Button, Typography, Box } from '@mui/material';
 import { MovieData } from '../interfaces/MovieData';
-import { addFavorites, removeFavorites } from '../redux/userSlice';
+import { addFavoritesRedux, removeFavoritesRedux } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import movies from '../data/movies.json'
-import { useAuth } from '../utils/useAuth';
+import { loginResponse } from '../interfaces/ResponseType';
+import { addFavorites, removeFavorites } from '../utils/manipulateDB';
 
 // interface MovieCardProps {
 //   movie: {
@@ -20,19 +21,17 @@ import { useAuth } from '../utils/useAuth';
 
 // , onShowDetails, onAddToFavorites
 
-const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
+const MovieCard = ({ movie, indx, isLogin, user }: { movie: MovieData, indx: number, isLogin: boolean, user: loginResponse }) => {
 
     const [isFavorite, setIsFavorite] = useState(false);
-    const { isLogin, user } = useAuth()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    let isAdded = user[0]?.favorites?.findIndex((i) => movies[i].Title === movie.Title)
+    let isAdded = user?.favorites?.findIndex((i) => i === movie.imdbID)
     const location = useLocation().pathname
     let index = -1;
 
-    // console.log(location)
     useEffect(() => {
-        isAdded = user[0]?.favorites?.findIndex((i) => movies[i].Title === movie.Title)
+        isAdded = user?.favorites?.findIndex((i) => i === movie.imdbID)
         if (isAdded !== -1) {
             setIsFavorite(true)
         }
@@ -47,40 +46,40 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
         }
     }, [isFavorite])
 
-    const onAddToFavorites = () => {
+    const onAddToFavorites = async() => {
 
-        if (location == '/') {
-            index = movies.findIndex((i) => i.Title === movie.Title)
-            console.log(index)
-        }
-        else {
-            index = indx
-        }
+        // if (location == '/') {
+        //     index = movies.findIndex((i) => i.Title === movie.Title)
+        //     console.log(index)
+        // }
+        // else {
+        //     index = indx
+        // }
         if (location !== '/favorites') setIsFavorite(!isFavorite);
         // Implement your logic to add/remove from favorites
-        console.log(isFavorite ? 'Removed from favorites' : 'Added to favorites');
+        // console.log(isFavorite ? 'Removed from favorites' : 'Added to favorites');
         if (!isFavorite && location !== '/favorites') {
-            console.log('Added to Favorites')
-            // console.log('id', Number(id))
-            dispatch(addFavorites(index))
+            // console.log('Added to Favorites')
+            await addFavorites(movie.imdbID)
+            dispatch(addFavoritesRedux(movie.imdbID))
         }
         else {
-            console.log('Removed from Favorites')
-            dispatch(removeFavorites(index))
-            // navigate(`${location}`)
+            // console.log('Removed from Favorites')
+            await removeFavorites(movie.imdbID)
+            dispatch(removeFavoritesRedux(movie.imdbID))
         }
     };
 
     const onShowDetails = () => {
         if (location == '/') {
             index = movies.findIndex((i) => i.Title === movie.Title)
-            console.log(index)
+            // console.log(index)
         }
         else {
             index = indx
         }
         // console.log('Show Details Button Clicked')
-        console.log(indx)
+        // console.log(indx)
         navigate(`/details/${index}`)
     }
 
@@ -136,7 +135,7 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
                             Show Details
                         </Button>
                         {
-                            isLogin && (
+                            isLogin ? (
                                 <Button
                                     variant={isFavorite || isAdded !== -1 ? 'outlined' : 'contained'}
                                     size="small"
@@ -145,7 +144,7 @@ const MovieCard = ({ movie, indx }: { movie: MovieData, indx: number }) => {
                                 >
                                     {isAdded !== -1 || isFavorite || location === '/favorites' ? 'Remove from favorites' : 'Add to favorites'}
                                 </Button>
-                            )
+                            ) : (<></>)
                         }
                     </CardActions>
                 </Box>

@@ -2,27 +2,27 @@ import Navbar from "../components/Navbar"
 import { useForm, Controller } from 'react-hook-form';
 import { TextField, Button, Box, Typography } from '@mui/material';
 import { RegisterFormData } from "../interfaces/RegisterFormData"
-import { AddUserToDB } from "../utils/AddUserToDB";
+import { AddUserToDB } from "../utils/manipulateDB";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../utils/useAuth";
+// import { useAuth } from "../utils/useAuth";
 
 const Register = () => {
   const { control, handleSubmit, formState: {errors} } = useForm<RegisterFormData>();
   const navigate = useNavigate()
-  const { user, isLogin } = useAuth()
+  // const { user, isLogin } = useAuth()
 
-  const onSubmit = (data: RegisterFormData) => {
+  const onSubmit = async(data: RegisterFormData) => {
     // console.log(data); // Handle form submission logic here
-    AddUserToDB(data)
+    await AddUserToDB(data)
 
     navigate('/login')
   };
 
-  if (user.length !== 0) {
-    console.log(user)
-    console.log(isLogin)
-    navigate('/')
-  }
+  // if (user.length !== 0) {
+  //   console.log(user)
+  //   console.log(isLogin)
+  //   navigate('/')
+  // }
 
   return (
     <>

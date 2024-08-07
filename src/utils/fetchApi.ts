@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { MovieData } from "../interfaces/MovieData"
+import toast from "react-hot-toast"
 // import { useState } from "react"
 
 export const FetchApi = async() => {
@@ -10,7 +11,7 @@ export const FetchApi = async() => {
         return data
         // setMovies(data)
     } catch (error) {
-        console.log('Something went wrong!')
+        toast.error('Something went wrong!')
     }
 }
 
