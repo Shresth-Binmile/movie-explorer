@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, Typography, Button, Box, List, Divider, ListItem, ListItemText, Drawer, IconButton } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { logoutSetState } from '../redux/userSlice';
 import { useAuth } from '../utils/useAuth';
@@ -7,15 +7,17 @@ import { useState } from 'react';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Menu } from '@mui/icons-material';
 import { logout } from '../utils/logoutFunction';
+import { RootState } from '../redux/store';
 
 const Navbar = () => {
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { isLogin, setIsLogin, user } = useAuth()
+  const { isLogin, setIsLogin } = useAuth()
   const isLoggedIn = isLogin
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const userInStore = useSelector((state:RootState)=>state.userReducer)
 
   const toggleDrawer = (open: boolean) => (event: any) => {
     if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -50,7 +52,7 @@ const Navbar = () => {
           <>
             <ListItem>
               <Typography variant="body1" fontWeight={'Bold'}>
-                Welcome, {user?.name?.split(' ')[0]}
+                Welcome, {userInStore?.name?.split(' ')[0]}
               </Typography>
             </ListItem>
             <ListItem button onClick={logout}>
@@ -107,7 +109,7 @@ const Navbar = () => {
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {isLoggedIn && (
               <Typography variant="body1" fontWeight={'Bold'} sx={{ mr: { xs: 1, sm: 2 }, display: { xs: 'none', md: 'inline', sm: 'inline' } }}>
-                Welcome, {user?.name?.split(' ')[0]}
+                Welcome, {userInStore?.name?.split(' ')[0]}
               </Typography>
             )}
             {isLoggedIn ? (

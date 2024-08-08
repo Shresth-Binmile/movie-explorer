@@ -39,27 +39,30 @@ const FavoriteMovies = () => {
   return (
     <>
       <Navbar />
-      <Box sx={{ mt: 10, display: "flex", flexDirection: "column", alignItems: "center" }}>
-        {/* <Box> // Search Adds Here...
-          <TextField
-            id="standard-basic"
-            placeholder="Search"
-            variant="standard"
-            fullWidth
-            sx={{ maxWidth: 500, minWidth: 300}}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
+      {
+        favorites.length === 0 ? (<Typography mt={10} fontWeight={'bold'} textAlign={'center'} variant="h3" component={'h3'}>No Items in Favorites.</Typography>) : 
+        (<Box sx={{ mt: 10, display: "flex", flexDirection: "column", alignItems: "center" }}>
+          {/* <Box> // Search Adds Here...
+            <TextField
+              id="standard-basic"
+              placeholder="Search"
+              variant="standard"
+              fullWidth
+              sx={{ maxWidth: 500, minWidth: 300}}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            {
+              searchText && <Typography textAlign={"center"}>Showing Results for "{searchText}"</Typography>
+            }
+          </Box> */}
           {
-            searchText && <Typography textAlign={"center"}>Showing Results for "{searchText}"</Typography>
+            // show the movies here...
+            favorites.map((movie, indx)=>(
+              <MovieCard key={indx} movie={movies[movie]} indx={movie} isLogin={isLogin} user={user!}/>
+            ))
           }
-        </Box> */}
-        {
-          // show the movies here...
-          favorites.map((movie, indx)=>(
-            <MovieCard key={indx} movie={movies[movie]} indx={movie} isLogin={isLogin} user={user!}/>
-          ))
-        }
-      </Box>
+        </Box>)
+      }
     </>
   )
 }
