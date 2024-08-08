@@ -56,7 +56,7 @@ const FavoriteMovies = () => {
         {
           // show the movies here...
           favorites.map((movie, indx)=>(
-            <MovieCard key={indx} movie={movies[movie]} indx={indx} isLogin={isLogin} user={user!}/>
+            <MovieCard key={indx} movie={movies[movie]} indx={movie} isLogin={isLogin} user={user!}/>
           ))
         }
       </Box>
